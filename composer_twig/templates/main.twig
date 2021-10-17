@@ -1,0 +1,14 @@
+<table>
+    <thead>
+        <tr>
+            <td>Username</td>
+            <td>Message</td>
+        </tr>
+    </thead>
+    {% for entry in data %}
+        <tr>
+            <td>{{ entry.login }}</td>
+            <td>{{ entry.message }}</td>
+        </tr>
+    {% endfor %}
+</table>
