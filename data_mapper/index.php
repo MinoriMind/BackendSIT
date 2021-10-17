@@ -1,35 +1,43 @@
 <?php
-    try
-    {
-        $db = new PDO('mysql:host=localhost;dbname=ar', 'Minori', 'nengfhjkm');
-    }
-    catch (PDOException $e)
-    {
-        printf("ERROR: %s", $e->getMessage());
-        die();
-    }
 
     class User
     {
         public int $id;
         public int $age;
         public string $name;
+    }
 
-        public function save($db)
+    class Repository
+    {
+        private $db;
+        function __construct()
         {
-            $save_stmt = $db->prepare("insert into users(age, name) values(?, ?)");
+            try
+            {
+                $this->db = new PDO('mysql:host=localhost;dbname=ar', 'Minori', 'nengfhjkm');
+            }
+            catch (PDOException $e)
+            {
+                printf("ERROR: %s", $e->getMessage());
+                die();
+            }
+        }
+
+        public function save(User $user)
+        {
+            $save_stmt = $this->db->prepare("insert into users(age, name) values(?, ?)");
             $save_stmt->execute(array($this->age, $this->name));
         }
 
-        public function remove($db)
+        public function remove(User $user)
         {
-            $delete_stmt = $db->prepare("delete from users where age = ? and name = ?");
+            $delete_stmt = $this->db->prepare("delete from users where age = ? and name = ?");
             $delete_stmt->execute(array($this->age, $this->name));
         }
 
-        static public function getById($db, int $id) : User
+        public function getById(int $id) : User
         {
-            $find_stmt = $db->prepare("select * from users where id = ?");
+            $find_stmt = $this->db->prepare("select * from users where id = ?");
             $find_stmt->execute(array($id));
             $res = $find_stmt->fetch();
             if(empty($res))
@@ -43,9 +51,9 @@
             return $user;
         }
 
-        static public function all($db) : array
+        public function all() : array
         {
-            foreach($db->query("select * from users") as $res)
+            foreach($this->db->query("select * from users") as $res)
             {
                 $user = new User();
                 $user->id =   $res["id"];
@@ -56,9 +64,9 @@
             return $users;
         }
 
-        static public function getByName($db, string $name) : User
+        public function getByName(string $name) : User
         {
-            $find_stmt = $db->prepare("select * from users where name = ?");
+            $find_stmt = $this->db->prepare("select * from users where name = ?");
             $find_stmt->execute(array($name));
             $res = $find_stmt->fetch();
             if(empty($res))
@@ -73,14 +81,14 @@
         }
     }
 
+    $rep = new Repository();
     $ex1 = new User();
     $ex1->age = 45;
     $ex1->name = "James";
-    // $ex1->save($db);
-    // $ex1->remove($db);
-    $ex2 = User::getById($db, 6);
-    $all = User::all($db);
-    $ex3 = User::getByName($db, "James");
+
+    $ex2 = $rep->getById(6);
+    $all = $rep->all();
+    $ex3 = $rep->getByName("James");
     echo $ex3->age;
 
 ?>
