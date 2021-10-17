@@ -1,0 +1,18 @@
+<table>
+    <thead>
+        <tr>
+            <td>Username</td>
+            <td>Message</td>
+        </tr>
+    </thead>
+    {% for message in messages %}
+        <tr>
+            <td>{{ message.author }}</td>
+            <td>{{ message.message }}</td>
+        </tr>
+    {% endfor %}
+
+    {% if warning == true %}
+       <p>YOU SHOULD LOGIN TO BE ABLE TO CHAT</p>
+    {% endif %}
+</table>
