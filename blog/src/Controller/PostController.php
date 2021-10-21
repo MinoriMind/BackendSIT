@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 #[Route('/post', name: 'post')]
 class PostController extends AbstractController
 {
@@ -35,15 +36,29 @@ class PostController extends AbstractController
         ]);
     }
 
+    
     #[Route('/create', name: 'create')]
     public function create(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
 
+        
         $form->handleRequest($request);
         if($form->isSubmitted())
         {
+            $file = $request->files->get('post')['image'];
+            if($file)
+            {
+                $filename = md5(uniqid()) . '.' . $file->guessClientExtension();
+
+                $file->move($this->getParameter('uploads_dir'), $filename);
+
+                $post->setImage($filename);
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($post);
             $em->flush();

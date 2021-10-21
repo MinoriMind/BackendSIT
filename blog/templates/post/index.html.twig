@@ -20,4 +20,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('postcreate') }}">Create post</a>
+    {% endif %}
 {% endblock %}
