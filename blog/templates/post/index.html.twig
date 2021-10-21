@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts!{% endblock %}
+
+{% block body %}
+    <h1> All posts </h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Title</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.title }}</td>
+                    <td><a href="{{ path('postshow', {title: post.title}) }}">Go to post</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
